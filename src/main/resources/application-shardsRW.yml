@@ -1,0 +1,82 @@
+#读写分离配置
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  shardingsphere:
+    datasource:
+      names: m1,m2
+      m1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/course_db_rw?serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+        username: root
+        password: 123456
+      m2:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3307/course_db_rw?serverTimezone=Asia/Shanghai&characterEncoding=utf-8
+        username: root
+        password: 123456
+    masterslave:
+      master-data-source-name: m1
+      slave-data-source-names: m2
+      name: dataSource
+    props:
+      sql:
+        show: true
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848  #Nacos服务注册中心地址
+        enabled: true
+        register-enabled: true
+        cluster-name: DEFAULT
+        group: DEFAULT_GROUP
+        namespace: koukay_dev  #自定义命名空间id
+#        namespace: c0a00c50-32b0-4f88-bff7-e44348448c5d  #这块留空或配置nacos的命名空间id即可,否则不能注册到服务列表
+      config:
+        # 如果不想使用 Nacos 进行配置管理，设置为 false 即可
+        enabled: false
+        # Nacos Server 地址
+        server-addr: 127.0.0.1:8848   #Nacos作为配置中心地址
+        # 组，默认为 DEFAULT_GROUP
+        group: DEFAULT_GROUP
+        # 配置内容的数据格式，默认为 properties
+        file-extension: yaml
+        # 指定命名空间，默认为public
+  application:
+    name: STUDENT
+server:
+  port: 8081
+
+logging:
+  level:
+    org.springframework.security:
+      - debug
+      - info
+    org.springframework.web: error
+    org.hibernate.SQL: debug
+    org.hibernate.engine.QueryParameters: debug
+    org.hibernate.engine.query.HQLQueryPlan: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+#开启hysrris
+feign:
+  hystrix:
+    enabled: true
+  client:
+    default:
+      #超时时间默认为1s
+      #建立连接所用的时间，适用于网络状况正常的情况下，两端连接所需要的时间
+      ConnectTimeOut: 10000
+      #指建立连接后从服务端读取到可用资源所用的时间
+      ReadTimeOut: 10000
+      #调用admin微服务接口配置
+    member-admin:
+      ConnectTimeOut: 10000
+      ReadTimeOut: 5000
+    metaDataClient:
+      connect-timeout: 50000
+      read-timeout: 50000
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false

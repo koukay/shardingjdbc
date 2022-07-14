@@ -57,4 +57,11 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseMapper.selectOne(wrapper);
         return new ResponseModel("查询成功", 200, course);
     }
+
+    @Override
+    public ResponseModel addCourse(Course course) {
+        courseMapper.insert(course);
+        Course courseResult = courseMapper.selectById(course.getCid());
+        return new ResponseModel("查询成功", 200, courseResult);
+    }
 }

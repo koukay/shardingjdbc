@@ -22,10 +22,10 @@ public class UdictServiceImpl implements UdictService {
     }
 
     @Override
-    public ResponseModel deleteUdict(Long cid) {
+    public ResponseModel deleteUdict(Long dict_id) {
         QueryWrapper<Udict> wrapper = new QueryWrapper<>();
-        wrapper.eq("dict_id", cid);
+        wrapper.eq("dict_id", dict_id);
         udictMapper.delete(wrapper);
-        return new ResponseModel("删除成功", 200, cid);
+        return new ResponseModel("删除成功", 200, dict_id);
     }
 }

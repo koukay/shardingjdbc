@@ -1,6 +1,7 @@
 package com.koukay.shardingjdbc.service;
 
 
+import com.koukay.shardingjdbc.entity.Course;
 import com.koukay.shardingjdbc.model.ResponseModel;
 
 /**
@@ -12,4 +13,6 @@ public interface CourseService {
     ResponseModel insertCourse(int howMany);
 
     ResponseModel selectOne(Long wrapper);
+
+    ResponseModel addCourse(Course course);
 }
